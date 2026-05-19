@@ -8,6 +8,7 @@ import { usePaymentsStore } from '@/stores/payments.store'
 import { useConfigStore } from '@/stores/config.store'
 import { processPayment } from '@/api/payments.api'
 import PaymentMethodSelector from '@/components/features/checkout/PaymentMethodSelector.vue'
+import WhatsAppShippingModal from '@/components/features/checkout/WhatsAppShippingModal.vue'
 import type { OrderStatus } from '@/api/orders.api'
 
 const route = useRoute()
@@ -58,14 +59,11 @@ async function copyToClipboard(text: string | null, key: string) {
 
 const copied = ref<Record<string, boolean>>({})
 
+const shippingModalOpen = ref(false)
+
 function openWhatsApp() {
-  const number = configStore.branding.whatsappNumber
-  if (!number || !order.value) return
-  const amount = order.value.totalAmount.toLocaleString('es-AR', { maximumFractionDigits: 0 })
-  const text = encodeURIComponent(
-    `Hola! Realicé la transferencia para el Pedido #${order.value.id} por $${amount}. Adjunto el comprobante.`
-  )
-  window.open(`https://wa.me/${number}?text=${text}`, '_blank')
+  if (!configStore.branding.whatsappNumber || !order.value) return
+  shippingModalOpen.value = true
 }
 
 // ─── Checkout API (CardPaymentBrick) ─────────────────────────────────────────
@@ -375,4 +373,17 @@ watch(() => paymentsStore.checkoutPublicKey, async (newKey) => {
       </div>
     </div>
   </AppLayout>
+
+  <!-- Modal de datos de envío para WhatsApp -->
+  <WhatsAppShippingModal
+    v-if="order"
+    v-model:open="shippingModalOpen"
+    :store-name="configStore.branding.storeName"
+    :whatsapp-number="configStore.branding.whatsappNumber!"
+    :order-id="order.id"
+    :created-at="order.createdAt"
+    :total-amount="order.totalAmount"
+    :purchase-type="order.purchaseType"
+    :items="order.items"
+  />
 </template>

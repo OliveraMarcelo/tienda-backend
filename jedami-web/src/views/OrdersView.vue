@@ -7,6 +7,7 @@ import { useConfigStore } from '@/stores/config.store'
 import { cancelOrder, updateOrderNotes } from '@/api/orders.api'
 import { smartCheckout, retryPayment, type BankDetails } from '@/api/payments.api'
 import type { OrderStatus } from '@/api/orders.api'
+import WhatsAppShippingModal from '@/components/features/checkout/WhatsAppShippingModal.vue'
 
 const router = useRouter()
 const ordersStore = useOrdersStore()
@@ -112,13 +113,11 @@ async function copyToClipboard(text: string | null, key: string) {
   } catch { /* navegador sin soporte */ }
 }
 
-function openWhatsApp(orderId: number, amount: number) {
-  const number = configStore.branding.whatsappNumber
-  if (!number) return
-  const text = encodeURIComponent(
-    `Hola! Realicé la transferencia para el Pedido #${orderId} por $${amount.toLocaleString('es-AR', { maximumFractionDigits: 0 })}. Adjunto el comprobante.`
-  )
-  window.open(`https://wa.me/${number}?text=${text}`, '_blank')
+const shippingModalOrder = ref<{ id: number; totalAmount: number; createdAt: string; purchaseType: string } | null>(null)
+
+function openWhatsApp(order: { id: number; totalAmount: number; createdAt: string; purchaseType: string }) {
+  if (!configStore.branding.whatsappNumber) return
+  shippingModalOrder.value = order
 }
 
 </script>
@@ -274,7 +273,7 @@ function openWhatsApp(orderId: number, amount: number) {
                 </ol>
                 <button
                   v-if="configStore.branding.whatsappNumber"
-                  @click.stop="openWhatsApp(order.id, order.totalAmount)"
+                  @click.stop="openWhatsApp(order)"
                   class="mt-1 inline-flex items-center gap-2 rounded-xl bg-green-500 text-white px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity w-full justify-center"
                 >
                   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -337,4 +336,17 @@ function openWhatsApp(orderId: number, amount: number) {
       </div>
     </div>
   </AppLayout>
+
+  <!-- Modal de datos de envío para WhatsApp (vista lista) -->
+  <WhatsAppShippingModal
+    v-if="shippingModalOrder"
+    :open="!!shippingModalOrder"
+    @update:open="(v) => { if (!v) shippingModalOrder = null }"
+    :store-name="configStore.branding.storeName"
+    :whatsapp-number="configStore.branding.whatsappNumber!"
+    :order-id="shippingModalOrder.id"
+    :created-at="shippingModalOrder.createdAt"
+    :total-amount="shippingModalOrder.totalAmount"
+    :purchase-type="(shippingModalOrder.purchaseType as any)"
+  />
 </template>

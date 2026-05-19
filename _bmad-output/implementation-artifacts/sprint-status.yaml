@@ -357,3 +357,15 @@ development_status:
   # WEB Track — jedami-web (depende de 17-1 done)
   web-17-1-selector-medio-pago: done                          # selector en checkout + config admin de gateways por tipo
 
+  # ─────────────────────────────────────────────────────────
+  # EPIC 18: Reportes y Analíticas
+  # Reportes de productos más vendidos y clientes con más pedidos
+  # ─────────────────────────────────────────────────────────
+  epic-18: in-progress
+
+  # BFF Track — jedami-bff
+  18-1-reportes-productos-y-clientes: ready-for-dev            # GET /admin/reports → top products + top customers
+
+  # WEB Track — jedami-web (depende de 18-1 done)
+  web-18-1-reportes-admin: ready-for-dev                       # Vista /admin/reportes con tablas de top productos y clientes
+

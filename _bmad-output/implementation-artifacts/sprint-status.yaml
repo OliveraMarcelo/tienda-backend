@@ -364,8 +364,8 @@ development_status:
   epic-18: in-progress
 
   # BFF Track — jedami-bff
-  18-1-reportes-productos-y-clientes: ready-for-dev            # GET /admin/reports → top products + top customers
+  18-1-reportes-productos-y-clientes: review                   # GET /admin/reports → top products + top customers
 
   # WEB Track — jedami-web (depende de 18-1 done)
-  web-18-1-reportes-admin: ready-for-dev                       # Vista /admin/reportes con tablas de top productos y clientes
+  web-18-1-reportes-admin: review                              # Vista /admin/reportes con tablas de top productos y clientes
 

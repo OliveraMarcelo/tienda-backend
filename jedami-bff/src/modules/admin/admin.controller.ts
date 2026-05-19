@@ -7,8 +7,11 @@ import { DASHBOARD_QUERY, RECENT_ORDERS_QUERY } from './queries/dashboard.js';
 import { ADMIN_PAYMENTS_QUERY, ADMIN_PAYMENTS_COUNT_QUERY } from './queries/payments.js';
 import { ADMIN_USERS_QUERY, ADMIN_USERS_COUNT_QUERY } from './queries/users.js';
 import { PENDING_FULFILLMENT_QUERY } from './queries/pending-fulfillment.js';
+import { REPORTS_QUERY } from './queries/reports.js';
 
 const DASHBOARD_CACHE_KEY = 'admin:dashboard';
+const REPORTS_CACHE_KEY = (limit: number) => `admin:reports:${limit}`;
+const REPORTS_TTL = 300;
 const DASHBOARD_TTL = 60; // segundos
 
 // ─── Pending fulfillment ──────────────────────────────────────────────────────
@@ -346,6 +349,39 @@ export async function getAdminUsers(req: Request, res: Response) {
       pagination: { page, limit, total, pages: Math.ceil(total / limit) },
     },
   });
+}
+
+// ─── Reportes ────────────────────────────────────────────────────────────────
+
+export async function getAdminReports(req: Request, res: Response) {
+  const rawLimit = Number(req.query.limit) || 10;
+  const limit = Math.min(50, Math.max(1, rawLimit));
+
+  const cached = await cacheGet(REPORTS_CACHE_KEY(limit));
+  if (cached) {
+    return res.status(200).json({ data: JSON.parse(cached) });
+  }
+
+  const result = await pool.query(REPORTS_QUERY, [limit]);
+  const row = result.rows[0];
+
+  const data = {
+    topProducts: (row.top_products as Array<{ product_id: number; name: string; total_units: string; total_revenue: string }>).map(r => ({
+      productId:    r.product_id,
+      name:         r.name,
+      totalUnits:   Number(r.total_units),
+      totalRevenue: Number(r.total_revenue),
+    })),
+    topCustomers: (row.top_customers as Array<{ customer_id: number; email: string; total_orders: string; total_revenue: string }>).map(r => ({
+      customerId:   r.customer_id,
+      email:        r.email,
+      totalOrders:  Number(r.total_orders),
+      totalRevenue: Number(r.total_revenue),
+    })),
+  };
+
+  await cacheSet(REPORTS_CACHE_KEY(limit), JSON.stringify(data), REPORTS_TTL);
+  return res.status(200).json({ data });
 }
 
 // ─── Stock adjustment ─────────────────────────────────────────────────────────

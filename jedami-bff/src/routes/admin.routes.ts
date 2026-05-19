@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getDashboard, getAdminPayments, getAdminUsers, getPendingFulfillment, fulfillOrderItem, dispatchOrder, decrementItemStock, confirmBankTransfer, updateVariantStock } from '../modules/admin/admin.controller.js';
+import { getDashboard, getAdminPayments, getAdminUsers, getPendingFulfillment, fulfillOrderItem, dispatchOrder, decrementItemStock, confirmBankTransfer, updateVariantStock, getAdminReports } from '../modules/admin/admin.controller.js';
 import { getAllBanners, uploadBanner, reorderBanners, updateBanner, deleteBanner } from '../modules/admin/banners.controller.js';
 import { getAllAnnouncements, createAnnouncement, reorderAnnouncements, updateAnnouncement, deleteAnnouncement } from '../modules/admin/announcements.controller.js';
 import { uploadBannersMiddleware, uploadAnnouncementsMiddleware } from '../config/upload.js';
@@ -14,6 +14,60 @@ const router = Router();
  *   name: Admin
  *   description: Panel de administración — requiere rol admin en todos los endpoints
  */
+
+/**
+ * @swagger
+ * /admin/reports:
+ *   get:
+ *     tags: [Admin]
+ *     summary: Reportes — productos más vendidos y clientes con más pedidos
+ *     description: Retorna top productos por unidades vendidas y top clientes por cantidad de pedidos. Solo pedidos con status=paid para revenue. Cacheado 5 minutos en Redis.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 50
+ *           default: 10
+ *         description: Cantidad de resultados a retornar (default 10, max 50)
+ *     responses:
+ *       200:
+ *         description: Reportes de productos y clientes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     topProducts:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           productId: { type: integer }
+ *                           name: { type: string }
+ *                           totalUnits: { type: integer }
+ *                           totalRevenue: { type: number }
+ *                     topCustomers:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           customerId: { type: integer }
+ *                           email: { type: string }
+ *                           totalOrders: { type: integer }
+ *                           totalRevenue: { type: number }
+ *       401:
+ *         description: No autenticado
+ *       403:
+ *         description: Sin rol admin
+ */
+router.get('/reports', getAdminReports);
 
 /**
  * @swagger

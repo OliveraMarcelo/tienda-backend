@@ -1,6 +1,6 @@
 # Story W18.1: Reportes Admin — Vista de Productos y Clientes — Web
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -34,23 +34,23 @@ para analizar el rendimiento del negocio sin necesidad de consultar la base de d
 
 ## Tasks / Subtasks
 
-- [ ] Crear `jedami-web/src/api/admin.reports.api.ts` (AC: 1)
-  - [ ] Tipado: `TopProduct { productId, name, totalUnits, totalRevenue }`, `TopCustomer { customerId, email, totalOrders, totalRevenue }`, `ReportsData { topProducts, topCustomers }`
-  - [ ] `fetchAdminReports(limit?: number): Promise<ReportsData>` → `GET /api/v1/admin/reports?limit=${limit ?? 10}`
-- [ ] Crear `jedami-web/src/views/admin/AdminReportsView.vue` (AC: 1, 2, 3, 5)
-  - [ ] `onMounted` → llamar `fetchAdminReports()`
-  - [ ] Sección "Productos más vendidos": tabla con Producto, Unidades, Revenue
-  - [ ] Sección "Clientes con más pedidos": tabla con Email, Total pedidos, Revenue
-  - [ ] Skeleton de carga con `animate-pulse` (patrón igual a AdminDashboardView)
-  - [ ] Manejo de error con mensaje + botón "Reintentar"
-  - [ ] Breadcrumb: `← Admin` con `router.push('/admin')`
-  - [ ] Revenue formateado con `toLocaleString('es-AR', { maximumFractionDigits: 0 })`
-- [ ] Agregar tarjeta "Reportes" en `jedami-web/src/views/admin/AdminView.vue` (AC: 4)
-  - [ ] Misma estructura de tarjeta que las existentes (Dashboard, Pagos, Productos, Usuarios)
-  - [ ] Navegar a `/admin/reportes`
-- [ ] Registrar ruta en `jedami-web/src/router/index.ts` (AC: 1)
-  - [ ] `/admin/reportes` → `AdminReportsView`, meta `{ requiresRole: ROLES.ADMIN }`
-  - [ ] Lazy import: `() => import('@/views/admin/AdminReportsView.vue')`
+- [x] Crear `jedami-web/src/api/admin.reports.api.ts` (AC: 1)
+  - [x] Tipado: `TopProduct { productId, name, totalUnits, totalRevenue }`, `TopCustomer { customerId, email, totalOrders, totalRevenue }`, `ReportsData { topProducts, topCustomers }`
+  - [x] `fetchAdminReports(limit?: number): Promise<ReportsData>` → `GET /api/v1/admin/reports?limit=${limit ?? 10}`
+- [x] Crear `jedami-web/src/views/admin/AdminReportsView.vue` (AC: 1, 2, 3, 5)
+  - [x] `onMounted` → llamar `fetchAdminReports()`
+  - [x] Sección "Productos más vendidos": tabla con Producto, Unidades, Revenue
+  - [x] Sección "Clientes con más pedidos": tabla con Email, Total pedidos, Revenue
+  - [x] Skeleton de carga con `animate-pulse` (patrón igual a AdminDashboardView)
+  - [x] Manejo de error con mensaje + botón "Reintentar"
+  - [x] Breadcrumb: `← Admin` con `router.push('/admin')`
+  - [x] Revenue formateado con `toLocaleString('es-AR', { maximumFractionDigits: 0 })`
+- [x] Agregar tarjeta "Reportes" en `jedami-web/src/views/admin/AdminView.vue` (AC: 4)
+  - [x] Misma estructura de tarjeta que las existentes (Dashboard, Pagos, Productos, Usuarios)
+  - [x] Navegar a `/admin/reportes`
+- [x] Registrar ruta en `jedami-web/src/router/index.ts` (AC: 1)
+  - [x] `/admin/reportes` → `AdminReportsView`, meta `{ requiresRole: ROLES.ADMIN }`
+  - [x] Lazy import: `() => import('@/views/admin/AdminReportsView.vue')`
 
 ## Dev Notes
 
@@ -159,4 +159,16 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- Vista con dos tablas independientes: productos más vendidos y clientes con más pedidos.
+- Skeleton de carga `animate-pulse` mientras llega la respuesta del API.
+- Botón "Reintentar" reutiliza la función `load()` sin recargar la página.
+- Revenue formateado con `$ N.NNN` sin decimales, consistente con el resto de la app.
+- Tarjeta agregada al panel `/admin` con ícono 📈.
+- Ruta `/admin/reportes` con lazy import y guard `requiresRole: ROLES.ADMIN`.
+
 ### File List
+
+- `jedami-web/src/api/admin.reports.api.ts` (nuevo)
+- `jedami-web/src/views/admin/AdminReportsView.vue` (nuevo)
+- `jedami-web/src/views/admin/AdminView.vue` (modificado)
+- `jedami-web/src/router/index.ts` (modificado)

@@ -1,6 +1,6 @@
 # Story 18.1: Reportes — Productos Más Vendidos y Clientes con Más Pedidos — BFF
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -39,18 +39,17 @@ para tomar decisiones de negocio basadas en datos reales de ventas.
 
 ## Tasks / Subtasks
 
-- [ ] Crear `jedami-bff/src/modules/admin/queries/reports.ts` (AC: 1, 2, 3)
-  - [ ] `TOP_PRODUCTS_QUERY`: JOIN order_items → products → orders WHERE paid, GROUP BY product, ORDER BY total_units DESC, LIMIT $1
-  - [ ] `TOP_CUSTOMERS_QUERY`: JOIN orders → customers → users, GROUP BY customer, ORDER BY total_orders DESC, LIMIT $1
-- [ ] Agregar handler `getAdminReports` en `jedami-bff/src/modules/admin/admin.controller.ts` (AC: 1, 4, 5)
-  - [ ] Parsear `?limit` con default 10, clamp 1–50
-  - [ ] Cache key: `admin:reports:${limit}`, TTL 300s
-  - [ ] `Promise.all` para ejecutar ambas queries en paralelo
-  - [ ] Mapear resultado a camelCase
-- [ ] Agregar ruta `GET /admin/reports` en `jedami-bff/src/routes/admin.routes.ts` (AC: 1)
-  - [ ] Agregar import de `getAdminReports`
-  - [ ] JSDoc Swagger con response shape completo
-- [ ] Registrar import en admin.routes.ts (AC: 1)
+- [x] Crear `jedami-bff/src/modules/admin/queries/reports.ts` (AC: 1, 2, 3)
+  - [x] `REPORTS_QUERY`: CTE única con top_products + top_customers, retorna ambos como columnas JSON en una sola fila
+- [x] Agregar handler `getAdminReports` en `jedami-bff/src/modules/admin/admin.controller.ts` (AC: 1, 4, 5)
+  - [x] Parsear `?limit` con default 10, clamp 1–50
+  - [x] Cache key: `admin:reports:${limit}`, TTL 300s
+  - [x] Una sola query `pool.query(REPORTS_QUERY, [limit])` — sin Promise.all
+  - [x] Mapear resultado a camelCase
+- [x] Agregar ruta `GET /admin/reports` en `jedami-bff/src/routes/admin.routes.ts` (AC: 1)
+  - [x] Agregar import de `getAdminReports`
+  - [x] JSDoc Swagger con response shape completo
+- [x] Registrar import en admin.routes.ts (AC: 1)
 
 ## Dev Notes
 
@@ -184,4 +183,12 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- Query implementada como CTE única (`REPORTS_QUERY`) que retorna top_products y top_customers como columnas JSON aggregadas en una sola fila, evitando múltiples round-trips a la base de datos.
+- Cache Redis con key `admin:reports:${limit}`, TTL 300s.
+- `?limit` parseado con default 10, clampeado entre 1 y 50.
+
 ### File List
+
+- `jedami-bff/src/modules/admin/queries/reports.ts` (nuevo)
+- `jedami-bff/src/modules/admin/admin.controller.ts` (modificado)
+- `jedami-bff/src/routes/admin.routes.ts` (modificado)

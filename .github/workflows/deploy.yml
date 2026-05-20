@@ -2,7 +2,13 @@ name: Deploy a producción
 
 on:
   push:
-    branches: [main]
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Motivo del deploy manual'
+        required: false
+        default: 'deploy manual'
 
 jobs:
   # ─── Gate: lint + build antes de deployar ────────────────────────────────
@@ -37,23 +43,41 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Docker metadata jedami-bff
+        id: meta-bff
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/jedami-bff
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest
+            type=sha,prefix=,format=long
+
       - name: Build y push jedami-bff
         uses: docker/build-push-action@v6
         with:
           context: ./jedami-bff
           push: true
+          tags: ${{ steps.meta-bff.outputs.tags }}
+
+      - name: Docker metadata jedami-web
+        id: meta-web
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/jedami-web
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/jedami-bff:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/jedami-bff:${{ github.sha }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest
+            type=sha,prefix=,format=long
 
       - name: Build y push jedami-web
         uses: docker/build-push-action@v6
         with:
           context: ./jedami-web
           push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/jedami-web:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/jedami-web:${{ github.sha }}
+          tags: ${{ steps.meta-web.outputs.tags }}
           build-args: |
             VITE_API_URL=
 

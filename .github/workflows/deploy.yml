@@ -5,6 +5,10 @@ on:
     tags: ['v*.*.*']
   workflow_dispatch:
     inputs:
+      version:
+        description: 'Versión a deployar (ej: v1.0.1)'
+        required: false
+        default: 'latest'
       reason:
         description: 'Motivo del deploy manual'
         required: false
@@ -85,22 +89,33 @@ jobs:
     needs: [ci, build-and-push]
     runs-on: ubuntu-latest
     steps:
+      - name: Calcular versión a deployar
+        id: ver
+        run: |
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            echo "value=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "value=${{ inputs.version || 'latest' }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: SSH deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          envs: DOCKERHUB_USERNAME
+          envs: DOCKERHUB_USERNAME,APP_VERSION
           script: |
             cd /opt/jedami
             git pull origin main
+            echo "Deployando versión: $APP_VERSION"
             docker compose -f docker-compose.prod.yml --env-file .env.prod pull jedami-bff jedami-web
             docker compose -f docker-compose.prod.yml --env-file .env.prod up -d jedami-bff jedami-web
             echo "Verificando salud del BFF..."
             sleep 15
             docker compose -f docker-compose.prod.yml exec -T jedami-bff wget -qO- http://localhost:3000/api/v1/health || (echo "ERROR: BFF no responde" && exit 1)
-            echo "Deploy exitoso"
+            echo "Deploy exitoso — versión $APP_VERSION en producción"
             docker image prune -f
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          APP_VERSION: ${{ steps.ver.outputs.value }}

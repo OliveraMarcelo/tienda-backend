@@ -50,7 +50,7 @@ services:
 
   # ── Backend (Express + TypeScript) ──────────────────────────────────────────
   jedami-bff:
-    image: ${DOCKERHUB_USERNAME}/jedami-bff:latest
+    image: ${DOCKERHUB_USERNAME}/jedami-bff:${APP_VERSION:-latest}
     restart: unless-stopped
     env_file:
       - .env.prod                        # Variables de entorno del BFF
@@ -85,7 +85,7 @@ services:
 
   # ── Frontend (Vue + Nginx) ───────────────────────────────────────────────────
   jedami-web:
-    image: ${DOCKERHUB_USERNAME}/jedami-web:latest
+    image: ${DOCKERHUB_USERNAME}/jedami-web:${APP_VERSION:-latest}
     restart: unless-stopped
     ports:
       - "80:80"

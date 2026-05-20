@@ -1,0 +1,57 @@
+# Changelog
+
+## [1.1.0](https://github.com/OliveraMarcelo/tienda-jedami/compare/v1.0.0...v1.1.0) (2026-05-20)
+
+
+### Features
+
+* **admin/reportes:** agregar endpoint y vista de reportes de productos y clientes ([e5728fa](https://github.com/OliveraMarcelo/tienda-jedami/commit/e5728fa136686c8b9b265a08b7eb9767aa7e17c2))
+* **admin:** eliminar productos/variantes, edición inline de variantes con stock, fix imageUrl en endpoint detalle ([5d93497](https://github.com/OliveraMarcelo/tienda-jedami/commit/5d93497d0399ca6e7d97d106fd22129070251304))
+* **bff:** correr migraciones automáticamente al bootstrap y agregar script npm run migrate ([167c00f](https://github.com/OliveraMarcelo/tienda-jedami/commit/167c00f10bd63726319e0bce7e2ddfa7208ec3e2))
+* **desktop-8:** Flutter desktop — login y gestión de stock ([42110bd](https://github.com/OliveraMarcelo/tienda-jedami/commit/42110bd7c589f282b488011a6bd3e2715d7d41c1))
+* epic 2 — compra mayorista (BFF + web) ([7141b69](https://github.com/OliveraMarcelo/tienda-jedami/commit/7141b69e2bd9990a87f877d25c13d459469825ce))
+* epic 3 — pagos con Mercado Pago Checkout Pro ([353d4e7](https://github.com/OliveraMarcelo/tienda-jedami/commit/353d4e7ea3667a25959ecb98ae631801459e0051))
+* epic 4 — compra minorista (BFF + web) ([5016b61](https://github.com/OliveraMarcelo/tienda-jedami/commit/5016b6108522dc433626f6ee59eb120ded721334))
+* epic 5 — escalabilidad: Redis cache, rate-limiting y refresh tokens ([84c59e5](https://github.com/OliveraMarcelo/tienda-jedami/commit/84c59e5c02c6f9d2efb7eb3bda53b2d3320eba02))
+* **epic-10:** gateway de pago configurable — checkout Pro / checkout API embebido ([efd0718](https://github.com/OliveraMarcelo/tienda-jedami/commit/efd0718c955c9d7324fdd35415f8c6dbfbf289d2))
+* **epic-11:** pago presencial MP Point — gestión de dispositivos e intents ([8c1339b](https://github.com/OliveraMarcelo/tienda-jedami/commit/8c1339b2d33b27569d43c9dde5ece5a5eb8e0883))
+* **epic-13:** notas en pedidos, banners del catálogo y anuncios personalizados ([972ca9b](https://github.com/OliveraMarcelo/tienda-jedami/commit/972ca9baab143b4241d898118bd148216ee58139))
+* **epic-15:** transferencia bancaria con confirmación manual y WhatsApp de aviso — stories 15-1, 15-2, W15-1, W15-2 ([ee4667a](https://github.com/OliveraMarcelo/tienda-jedami/commit/ee4667a2785363f1eaa30362b95920ac722e725b))
+* **epic-16:** despacho unificado curva/cantidad/menor — status shipped, stock opcional — stories 16-1, W16-1 ([d568646](https://github.com/OliveraMarcelo/tienda-jedami/commit/d5686467d6743222029af051a777e7029996b488))
+* **epic-17:** múltiples medios de pago por tipo de cliente ([712c2da](https://github.com/OliveraMarcelo/tienda-jedami/commit/712c2dafa0aa0d7010cbcc3a104e55df2e7fdf65))
+* **epic-6:** catálogo mejorado — fotos, categorías y precios mayoristas ([9241427](https://github.com/OliveraMarcelo/tienda-jedami/commit/9241427e6dfbaac6a8f7b2d1f121412383df19b3))
+* **epic-7:** panel admin avanzado, branding y config — stories 7-2, 7-3, W7-2, W7-5 ([20c4895](https://github.com/OliveraMarcelo/tienda-jedami/commit/20c489575b5c1f78ba35349f582dd9ae312877fd))
+* **epic-9:** robustez y mejoras operacionales — idempotencia, cancelación, soft-delete, búsqueda, reordenamiento, cache, tests ([7330f12](https://github.com/OliveraMarcelo/tienda-jedami/commit/7330f12ed3416f0736766b94c21b3929fa562078))
+* **images:** upload de archivos reales — multer, almacenamiento en /uploads/products, servido como estático ([191737a](https://github.com/OliveraMarcelo/tienda-jedami/commit/191737a62eb8f576e4f09c8411efa2a12c0e1745))
+* **seed:** agregar fotos de ejemplo para los 5 productos (Unsplash) ([ce671d8](https://github.com/OliveraMarcelo/tienda-jedami/commit/ce671d806bec05599548aed58bc7b01badafad1f))
+* stories 1-4/1-5 — CRUD de productos y catalogo publico ([e8390db](https://github.com/OliveraMarcelo/tienda-jedami/commit/e8390dbd47d25a979fcc353dedb3ce4efdaa44db))
+* story 1-1 — infraestructura base del proyecto ([c5b9ad9](https://github.com/OliveraMarcelo/tienda-jedami/commit/c5b9ad9c9772b1026168c2faa2271ba45bb9a5a6))
+* story 1-2 — registro y autenticacion de administrador ([1dfee70](https://github.com/OliveraMarcelo/tienda-jedami/commit/1dfee705254480d15b78e55cb4cc4f64dcfb7f71))
+* story 1-3 — gestion de roles y control de acceso (RBAC) ([b869de2](https://github.com/OliveraMarcelo/tienda-jedami/commit/b869de215266abd5692db8626ff13125909a2525))
+* **story-2-7:** descuentos por volumen/cantidad — escalones y mínimo de compra ([c5eda68](https://github.com/OliveraMarcelo/tienda-jedami/commit/c5eda68378c0f559114d6cf895a3d241520534f5))
+* **story-2.1/w2.1:** registro self-service retail/wholesale sin admin ([8c1a5ad](https://github.com/OliveraMarcelo/tienda-jedami/commit/8c1a5ad855760554dc6bff3fda0536624d432c51))
+* **story-6.3:** tablas de referencia, product_prices y refactor de variantes ([2bcaaef](https://github.com/OliveraMarcelo/tienda-jedami/commit/2bcaaef08afb87c60f111d39b375e36aa776b3ca))
+* **story-6.6:** tablas de configuración del sistema y endpoint GET /config ([eebc292](https://github.com/OliveraMarcelo/tienda-jedami/commit/eebc29265a55b18e887872227c21e5782ae1f0ba))
+* **story-7.1:** dashboard de ventas — GET /admin/dashboard con caché Redis ([0c3d3e8](https://github.com/OliveraMarcelo/tienda-jedami/commit/0c3d3e8c5c1f45c7680997a2f68a5de329feed06))
+* **story-W6.2:** UI dinámica desde DB — customer types, purchase types y price modes ([9550c88](https://github.com/OliveraMarcelo/tienda-jedami/commit/9550c88093c7666e7c6419dab32e43820cc3ef1a))
+
+
+### Bug Fixes
+
+* **1-1:** aplicar correcciones del code review de Story 1-1 ([deeb40a](https://github.com/OliveraMarcelo/tienda-jedami/commit/deeb40a7e0de4da103f17e7c0a4e175aab47f3e3))
+* **1-2:** aplicar correcciones del code review de Story 1-2 ([6fc0584](https://github.com/OliveraMarcelo/tienda-jedami/commit/6fc0584502146aee9be45d8ef03ea4bd41704c24))
+* **1-3:** aplicar correcciones del code review de Story 1-3 ([0143bbd](https://github.com/OliveraMarcelo/tienda-jedami/commit/0143bbd1eb05b0bed255c3927754652771bdb2d0))
+* **1-4:** aplicar correcciones del code review de Story 1-4 ([19650c9](https://github.com/OliveraMarcelo/tienda-jedami/commit/19650c95c5ab0a25d850c3ecdc8295039afbcd28))
+* **1-5:** aplicar correcciones del code review de Story 1-5 ([d1cf0db](https://github.com/OliveraMarcelo/tienda-jedami/commit/d1cf0db0c619d2cf80a6239e96fbbf1b36d522f9))
+* **admin/usuarios:** mostrar todos los roles del usuario al filtrar por rol ([2363429](https://github.com/OliveraMarcelo/tienda-jedami/commit/2363429d92ceb4def6bad33eaaef1dac41824576))
+* **admin:** corregir columna customer_type en query de admin/usuarios ([3ea1bb1](https://github.com/OliveraMarcelo/tienda-jedami/commit/3ea1bb1253eb6c1428468ffd12826db19c746ca9))
+* adversarial review fixes epics 4 & 5 ([2670180](https://github.com/OliveraMarcelo/tienda-jedami/commit/2670180ea251abc517a5418767b53cdf4810ee0d))
+* **bff:** CORS_ORIGIN soporta múltiples orígenes separados por coma ([1568856](https://github.com/OliveraMarcelo/tienda-jedami/commit/1568856878749c7d263825eba7f001a305c95ad7))
+* **bff:** Dockerfile node:22 → node:24 para coincidir con package-lock.json (npm 11) ([408b9fb](https://github.com/OliveraMarcelo/tienda-jedami/commit/408b9fb8762b7ab1e85b1d23ad9aeda2cf995b4e))
+* **bff:** eliminar rate limiting global y de autenticación ([da98635](https://github.com/OliveraMarcelo/tienda-jedami/commit/da986351cf069d2db0de865a490e6be8ddd5e8bd))
+* **lint:** corregir errores de ESLint preexistentes que rompían el pipeline ([1027848](https://github.com/OliveraMarcelo/tienda-jedami/commit/102784842a4521a2409a9b0f37d33323ecdccc83))
+* **migrations:** separar seed de categorías y wholesale_price a migración 013 para respetar orden de dependencias ([b53389c](https://github.com/OliveraMarcelo/tienda-jedami/commit/b53389c6e55464e0d79bfd0d23af285d85cf1dda))
+* **orders:** corregir queries tras migración 017 — variants sin columnas size/color/prices ([15f559b](https://github.com/OliveraMarcelo/tienda-jedami/commit/15f559b0ce2025af47afc6ddf1d09e956dc073c8))
+* **products:** CREATE_PRODUCT ahora incluye category_id — el campo se ignoraba al crear producto ([efa2b43](https://github.com/OliveraMarcelo/tienda-jedami/commit/efa2b439aed4e44163530cd08365551a9e48522a))
+* profile.api.ts called /me but route is /users/me — results in 404 ([07b8c21](https://github.com/OliveraMarcelo/tienda-jedami/commit/07b8c21b8d37c96e900449c4d6c5e515e9620e76))
+* **story-13.3:** code review — validación targetAudience, sort_order atómico, tipo público/admin separado, guard onMounted, AC4 sidebar condicional ([b17305f](https://github.com/OliveraMarcelo/tienda-jedami/commit/b17305f8d78d01db77db43e3f5ce8b6347c75a1f))

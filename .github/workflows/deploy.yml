@@ -50,7 +50,6 @@ jobs:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/jedami-bff
           tags: |
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest
             type=sha,prefix=,format=long
 
@@ -68,7 +67,6 @@ jobs:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/jedami-web
           tags: |
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest
             type=sha,prefix=,format=long
 

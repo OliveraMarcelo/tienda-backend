@@ -1,0 +1,71 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file: .env.stg
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - jedami-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - jedami-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  jedami-bff:
+    image: ${DOCKERHUB_USERNAME}/jedami-bff:${APP_VERSION:-latest}
+    restart: unless-stopped
+    env_file: .env.stg
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      NODE_ENV: staging
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jedami-internal
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/v1/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  jedami-web:
+    image: ${DOCKERHUB_USERNAME}/jedami-web:${APP_VERSION:-latest}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      jedami-bff:
+        condition: service_healthy
+    networks:
+      - jedami-internal
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  jedami-internal:
+    driver: bridge

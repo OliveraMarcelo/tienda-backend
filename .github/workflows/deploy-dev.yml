@@ -1,0 +1,73 @@
+name: Deploy → Dev
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-push:
+    name: Build & Push → Docker Hub (edge)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login a Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Docker metadata jedami-bff
+        id: meta-bff
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/jedami-bff
+          tags: |
+            type=raw,value=edge
+            type=sha,prefix=,format=long
+
+      - name: Build y push jedami-bff
+        uses: docker/build-push-action@v6
+        with:
+          context: ./jedami-bff
+          push: true
+          tags: ${{ steps.meta-bff.outputs.tags }}
+
+      - name: Docker metadata jedami-web
+        id: meta-web
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/jedami-web
+          tags: |
+            type=raw,value=edge
+            type=sha,prefix=,format=long
+
+      - name: Build y push jedami-web
+        uses: docker/build-push-action@v6
+        with:
+          context: ./jedami-web
+          push: true
+          tags: ${{ steps.meta-web.outputs.tags }}
+          build-args: |
+            VITE_API_URL=
+
+  deploy:
+    name: Deploy → jedami.dev.local
+    needs: build-and-push
+    runs-on: [self-hosted, jedami-local]
+    steps:
+      - name: Deploy en dev VM
+        run: |
+          ssh -o StrictHostKeyChecking=no jedami@jedami.dev.local "
+            cd /opt/jedami
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }} \
+            docker compose -f docker-compose.dev.yml pull jedami-bff jedami-web
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }} \
+            docker compose -f docker-compose.dev.yml up -d
+          "
+
+      - name: Health check
+        run: |
+          sleep 15
+          wget -qO- http://jedami.dev.local:3000/api/v1/health || (echo "ERROR: BFF dev no responde" && exit 1)
+          echo "Deploy dev OK"

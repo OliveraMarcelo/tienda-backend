@@ -4,7 +4,8 @@
         build build-bff build-web \
         lint lint-bff lint-web \
         clean clean-bff clean-web clean-mobile \
-        mobile-get mobile-run-android mobile-run-ios mobile-run-web
+        mobile-get mobile-run-android mobile-run-ios mobile-run-web \
+        infra-plan infra-up infra-down infra-ssh-dev infra-ssh-stg
 
 # ─── Colores ────────────────────────────────────────────────────────────────
 CYAN  := \033[0;36m
@@ -52,6 +53,13 @@ help:
 	@echo "    make clean-bff         Limpia dist/ del BFF"
 	@echo "    make clean-web         Limpia dist/ del web"
 	@echo "    make clean-mobile      Limpia build/ de Flutter"
+	@echo ""
+	@echo "  Infraestructura (KVM + Terraform):"
+	@echo "    make infra-plan        Muestra los cambios que aplicaría Terraform"
+	@echo "    make infra-up          Crea/actualiza las VMs dev y stg"
+	@echo "    make infra-down        Destruye las VMs (datos incluidos)"
+	@echo "    make infra-ssh-dev     Abre SSH a jedami.dev.local"
+	@echo "    make infra-ssh-stg     Abre SSH a jedami.stg.local"
 	@echo ""
 
 # ─── Instalación ────────────────────────────────────────────────────────────
@@ -142,3 +150,25 @@ clean-web:
 clean-mobile:
 	$(call log,Limpiando Flutter build...)
 	cd jedami-mobile && flutter clean
+
+# ─── Infraestructura ────────────────────────────────────────────────────────
+TERRAFORM_DIR := infra/terraform
+
+infra-plan:
+	$(call log,Terraform plan — cambios pendientes...)
+	cd $(TERRAFORM_DIR) && terraform plan
+
+infra-up:
+	$(call log,Terraform apply — creando/actualizando VMs...)
+	cd $(TERRAFORM_DIR) && terraform apply
+
+infra-down:
+	$(call log,Terraform destroy — eliminando VMs...)
+	@echo "⚠️  Esto destruye las VMs y sus datos. Ctrl+C para cancelar."
+	cd $(TERRAFORM_DIR) && terraform destroy
+
+infra-ssh-dev:
+	ssh jedami@jedami.dev.local
+
+infra-ssh-stg:
+	ssh jedami@jedami.stg.local
